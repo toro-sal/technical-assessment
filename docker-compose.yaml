@@ -65,6 +65,17 @@ x-airflow-common:
     AIRFLOW__WEBSERVER__NAVBAR_COLOR: '#1c1f22'
     AIRFLOW__WEBSERVER__NAVBAR_HOVER_COLOR: '#2c3136'
     AIRFLOW__WEBSERVER__NAVBAR_TEXT_COLOR: '#e8eef5'
+    GOOGLE_APPLICATION_CREDENTIALS: /opt/airflow/gcp/key.json
+    GCP_PROJECT_ID: brilliant-dryad-434600-f5      
+    BQ_DATASET: ancient                   
+    BQ_LOCATION: US   
+    AIRFLOW_VAR_GOOGLE_CREDENTIALS_PATH: /opt/airflow/gcp/key.json
+    AIRFLOW_VAR_LOCAL_DATA_DIR: /opt/data
+    AIRFLOW_VAR_GCS_BUCKET_NAME: ancientg_tecnical #ancientg_tecnical/raw
+    AIRFLOW_VAR_BQ_PROJECT: brilliant-dryad-434600-f5  
+    AIRFLOW_VAR_BQ_DATASET: ancient
+    AIRFLOW_VAR_BQ_WRITE_MODE: TRUNCATE   # o APPEND                         
+
     # yamllint disable rule:line-length
     # Use simple http server on scheduler for health checks
     # See https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/check-health.html#scheduler-health-check-server
@@ -83,6 +94,8 @@ x-airflow-common:
     - ./airflow/plugins:/opt/airflow/plugins
     - ./data:/opt/data
     - ./dbt:/opt/dbt
+    - ./gcp/key.json:/opt/airflow/gcp/key.json:ro
+
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on

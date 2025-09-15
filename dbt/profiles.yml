@@ -1,12 +1,27 @@
 technical_assessment:
+  target: "{{ env_var('DBT_TARGET', 'dev_pg') }}"
   outputs:
-    dev:
-      dbname: airflow
+
+    # ─── Postgres ─────────────────────────────────
+    dev_pg:
+      type: postgres
       host: postgres
+      user: airflow
       pass: airflow
       port: 5432
+      dbname: airflow
       schema: public
       threads: 1
-      type: postgres
-      user: airflow
-  target: dev
+
+    # ─── BigQuery  ──────────────────────────────────
+    dev_bq:
+      type: bigquery
+      method: service-account
+      keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS') }}"
+      project: "{{ env_var('GCP_PROJECT_ID') }}"
+      dataset: "{{ env_var('BQ_DATASET') }}"
+      location: "{{ env_var('BQ_LOCATION', 'US') }}"
+      priority: interactive         # o batch
+      threads: 4                    # ajusta a tu gusto
+      timeout_seconds: 300
+      retries: 1

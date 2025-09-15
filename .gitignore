@@ -434,3 +434,9 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/python,windows,linux,macos,virtualenv,pycharm,visualstudiocode,sublimetext,notepadpp
+
+
+
+technical-assessment/gcp/key.json
+
+.venv

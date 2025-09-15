@@ -1,0 +1,93 @@
+version: 2
+
+models:
+  # BRONZE
+  - name: br_affiliates
+    columns:
+      - name: id
+        tests: [unique, not_null]
+
+  - name: br_players
+    columns:
+      - name: id
+        tests: [unique, not_null]
+      - name: country_code
+        tests: [not_null]
+
+  - name: br_transactions
+    columns:
+      - name: id
+        tests: [unique, not_null]
+      - name: type
+        tests:
+          - values_in_ci:
+              column_name: type
+              allowed: ["deposit","withdraw"]
+
+  # SILVER
+  - name: sl_affiliates
+    columns:
+      - name: id
+        tests: [unique, not_null]
+      - name: id
+        tests:
+          - test_fd:
+              determinant_cols: "id"
+              dependent_cols: "code,origin,redeemed_at"
+
+  - name: sl_players
+    tests:
+      - ref_integrity_nullable:
+          fk_col: affiliate_id
+          parent_ref: ref('sl_affiliates')
+          parent_pk: id
+    columns:
+      - name: id
+        tests: [unique, not_null]
+      - name: country_code
+        tests: [not_null]
+
+  - name: sl_affiliate_player_bridge
+    tests:
+      - one_to_one:
+          left_col: affiliate_id
+          right_col: player_id
+      - ref_integrity:
+          fk_col: player_id
+          parent_ref: ref('sl_players')
+          parent_pk: id
+
+  - name: sl_transactions
+    tests:
+      - no_txn_before_kyc: {}
+      - ref_integrity:
+          fk_col: player_id
+          parent_ref: ref('sl_players')
+          parent_pk: id
+    columns:
+      - name: amount
+        tests: [not_null]
+
+  # GOLD
+  - name: g_player_daily_balance
+    tests:
+      - unique_by_key:
+          key_cols: "player_id, txn_date"
+    columns:
+      - name: deposits
+        tests: [not_null]
+      - name: withdrawals
+        tests: [not_null]
+
+  - name: g_country_deposits_discord
+    columns:
+      - name: country_code
+        tests: [not_null]
+
+  - name: g_top3_player_deposits
+    tests:
+      - unique_by_key:
+          key_cols: "player_id, rank_position"
+    columns:
+      - name: top_deposit_amount
+        tests: [not_null]

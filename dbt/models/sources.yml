@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: raw
+    database: "{{ env_var('GCP_PROJECT_ID') }}"
+    schema: "{{ env_var('BQ_DATASET') }}"
+    tables:
+      - name: affiliates          
+        identifier: affiliates_1000  
+      - name: players
+        identifier: players_1000
+      - name: transactions
+        identifier: transactions_1000

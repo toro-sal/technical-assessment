@@ -1,1 +1,9 @@
-dbt-postgres==1.9.1
+dbt-core==1.9.1
+dbt-bigquery==1.9.1
+# dbt-postgres==1.9.1  # solo si lo necesitas realmente
+
+pandas>=2.1
+pyarrow>=15.0
+google-cloud-storage>=2.15
+apache-airflow-providers-google>=12.0.0
+pendulum>=3.0
